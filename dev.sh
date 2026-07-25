@@ -26,8 +26,8 @@ PORT="${PORT:-8799}"
 ROOT_DIR="build/combis"        # the deploy root — Combis is served at /
 
 echo "→ building events feed + site…"
-python3 src/scripts/25_publish_events.py
-python3 src/scripts/09_build_site.py
+python3 apps/www/scripts/25_publish_events.py
+python3 apps/www/scripts/09_build_site.py
 
 if lsof -ti "tcp:$PORT" >/dev/null 2>&1; then
   echo "→ freeing port $PORT (previous dev server)"

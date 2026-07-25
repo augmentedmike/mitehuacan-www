@@ -1,0 +1,12 @@
+[submodule "apps/backup"]
+	path = apps/backup
+	url = git@github.com:augmentedmike/mitehuacan-backup.git
+[submodule "planning"]
+	path = planning
+	url = git@github.com:augmentedmike/mitehuacan-planning.git
+[submodule "apps/ios"]
+	path = apps/ios
+	url = git@github.com:augmentedmike/mitehuacan-ios.git
+[submodule "apps/admin"]
+	path = apps/admin
+	url = git@github.com:augmentedmike/mitehuacan-admin.git

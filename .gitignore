@@ -33,8 +33,6 @@ build/*
 # wrangler local dev
 .dev.vars
 .wrangler/
-# admin app checkout — its own repo: github.com/augmentedmike/mitehuacan-admin
-/admin/
 resources/poi/denue_puebla.csv
 .vercel
 # local agent run logs — never committed
@@ -51,6 +49,15 @@ resources/stickers/*-preview.png
 .claude/settings.local.json
 
 # Xcode per-user state
+xcuserdata/
 *.xcodeproj/xcuserdata/
 *.xcodeproj/project.xcworkspace/xcuserdata/
+
+# certs / keys — make sure none slip in
+*.key
+*.cert
+*.crt
+*.csr
+*.secret
+
 **/.DS_Store

@@ -13,7 +13,7 @@ ROOT="$(git rev-parse --show-toplevel)"
 while read -r local_ref local_sha remote_ref remote_sha; do
   [ "$remote_ref" = "refs/heads/main" ] || continue
   echo "pre-push: verifying prod schema is in sync before main…"
-  if ! python3 "$ROOT/src/scripts/check_migrations.py" production; then
+  if ! python3 "$ROOT/apps/www/scripts/check_migrations.py" production; then
     echo ""
     echo "🛑 Push to main blocked — prod DB is missing migrations."
     echo "   Apply them first, THEN push:"

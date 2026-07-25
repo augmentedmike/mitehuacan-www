@@ -23,20 +23,20 @@ jobs:
           fetch-depth: 0
 
       - name: refresh POI + places data from OSM
-        run: python3 src/scripts/16_refresh_pois.py
+        run: python3 apps/www/scripts/16_refresh_pois.py
 
       - name: refresh DENUE establishments (INEGI)
         run: |
           curl -s -o /tmp/denue.zip "https://www.inegi.org.mx/contenidos/masiva/denue/denue_21_csv.zip"
           unzip -o -q /tmp/denue.zip -d /tmp/denue
           cp /tmp/denue/conjunto_de_datos/denue_inegi_21_.csv resources/poi/denue_puebla.csv
-          python3 src/scripts/17_build_denue.py
+          python3 apps/www/scripts/17_build_denue.py
 
       - name: refresh streets + intersections (OSM)
-        run: python3 src/scripts/20_build_streets.py
+        run: python3 apps/www/scripts/20_build_streets.py
 
       - name: rebuild site
-        run: python3 src/scripts/09_build_site.py
+        run: python3 apps/www/scripts/09_build_site.py
 
       - name: commit to dev and open promote PR if data changed
         env:

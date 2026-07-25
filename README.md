@@ -10,14 +10,15 @@ per city: `/tehuacan`; QR stickers resolve via `/qr/<sticker-id>` and never brea
 ## What's here
 
 | Path | What |
-|---|---|
-| `tehuacan/` | Complete Tehuacán route dataset (82 routes, 80 with geometry), scrape/normalize pipeline, provenance docs |
-| `app/` | The web map: route explorer + A→B combi trip planner (MapLibre + OpenFreeMap, no keys, no Google) |
-| `site/` | Generated mitehuacan.mx static site (landing, city hub, 82 per-route SEO pages, map, `_redirects` for QR) — rebuild with `src/scripts/09_build_site.py` |
-| `docs/system-design.md` | Interview-style system design: DAU math, Tier 0 ($0/mo) and Tier 1 (~$30/mo) architectures, diagrams |
-| `PRD.md` | Coordinator web app (Traccar-based ride collection pipeline) |
-| `PRD-mobile.md` | Mobile app spec: planner + passive telemetry + crowding tags |
-| `traccar-rider-guide.md` | Field guide (ES/EN) for riders recording routes with Traccar Client |
+|---|---|---|
+| `apps/www/` | The web app: frontend (`app/`), API (`functions/`), build/data scripts (`scripts/`), DB migrations (`migrations/`) |
+| `apps/admin/` | Coordinator web app (Traccar-based ride collection pipeline) |
+| `apps/ios/` | Native iOS app: planner + passive telemetry + crowding tags |
+| `apps/backup/` | D1 backup Worker — nightly archive + restore tooling |
+| `planning/` | Docs (`docs/`), PRDs (`prds/`), business plans (`business/`), financial models (`financials/`) |
+| `build/` | Generated mitehuacan.mx static site |
+| `resources/` | Data artifacts (brand, map-data, POIs, stickers) |
+| `infra/` | Infrastructure (Traccar) |
 | `SECURITY.md` | Rules for humans and AI agents; location data is radioactive |
 
 ## Status / decisions (2026-07)
@@ -34,4 +35,4 @@ cd tehuacan/map && python3 -m http.server 8123
 # open http://localhost:8123 — needs internet for basemap tiles + geocoding
 ```
 
-Dataset rebuild: `src/scripts/01…08` in order (see `tehuacan/README.md`).
+Dataset rebuild: `apps/www/scripts/01…08` in order (see `tehuacan/README.md`).
