@@ -30,7 +30,8 @@ echo "==> [2/4] rebuild static site (build/)"
 python3 apps/www/scripts/09_build_site.py
 
 echo "==> [3/4] deploy Cloudflare Pages (static + functions) to branch $BRANCH"
-bunx wrangler pages deploy build --functions-dir apps/www/functions --project-name mitehuacan --branch "$BRANCH"
+cp -r apps/www/functions functions  # wrangler v4 needs functions/ at project root
+bunx wrangler pages deploy build --project-name mitehuacan --branch "$BRANCH"
 
 echo "==> [4/4] verify no schema drift remains"
 python3 apps/www/scripts/check_migrations.py "$TARGET"
