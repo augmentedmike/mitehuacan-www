@@ -69,3 +69,13 @@ export async function onRequestPost({ request, env }) {
   ).run();
   return json({ ok: true, slug });
 }
+
+export async function onRequestDelete({ request, env }) {
+  if (!authed(request, env)) return json({ error: "no autorizado" }, 401);
+  let b;
+  try { b = await request.json(); } catch { return json({ error: "bad json" }, 400); }
+  const slug = String(b.slug || "").trim().slice(0, 80);
+  if (!slug) return json({ error: "slug requerido" }, 400);
+  const { meta } = await env.DB.prepare("DELETE FROM combi_lines WHERE slug = ?").bind(slug).run();
+  return json({ ok: true, deleted: meta.changes > 0, slug });
+}
