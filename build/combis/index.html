@@ -1024,13 +1024,17 @@ const state = {kind: 'all', q: '', sel: null, plan: null, planSel: null, idFilte
 
 // per-route service window + headway, edited in /system/horarios (D1-backed)
 let SCHEDULES = {};
+let LIVE_SLUGS = null;   // null = not loaded; empty Set = no live routes
 fetch('/api/horarios').then(r => r.json())
   .then(d => {
     SCHEDULES = d.schedules || {};
     if (state.sel) renderDetail();
-    if (typeof SHEET !== 'undefined' && SHEET) openSheet(SHEET, SHEET_MODE);  // boot-restored sheet re-renders with data
+    if (typeof SHEET !== 'undefined' && SHEET) openSheet(SHEET, SHEET_MODE);
   })
   .catch(() => { /* map works fine without schedule data */ });
+fetch('/api/live-routes').then(r => r.json())
+  .then(d => { LIVE_SLUGS = new Set(d.slugs || []); applyFilter(); if (typeof mApply === 'function') mApply(); })
+  .catch(() => { LIVE_SLUGS = null; });
 
 /* ---------- geometry in meter space ---------- */
 const MLAT = 110570, MLON = 111320 * Math.cos(18.462 * Math.PI / 180);
@@ -1296,6 +1300,7 @@ const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
 function visible(f) {
   const p = f.properties;
+  if (LIVE_SLUGS && LIVE_SLUGS.size > 0 && !LIVE_SLUGS.has(p.id)) return false;
   if (state.idFilter && !state.idFilter.has(p.id)) return false;
   if (state.kind !== 'all' && p.kind !== state.kind) return false;
   if (state.q) {
@@ -2723,7 +2728,9 @@ function mApply(fit) {
   const matched = feats.filter(mlVisible);
   // the "Favoritas" filter shows ONLY favorites — even zero, it must never fall back
   // to every route; a zero-match text SEARCH still falls back so the map never blanks.
-  const useAll = !matched.length && MV.kind !== 'fav';
+  // When live filtering is active, never fall back to all routes.
+  const liveActive = LIVE_SLUGS && LIVE_SLUGS.size > 0;
+  const useAll = !matched.length && MV.kind !== 'fav' && !liveActive;
   const base = [...new Set([...(useAll ? feats : matched).map(f => f.properties.id), ...on])];
   // "tap a route" hint card needs no map layers — update it even before map load
   const hint = document.getElementById('mhint');
@@ -2977,6 +2984,7 @@ addEventListener('resize', placeSeg);
 
 function mlVisible(f) {
   const p = f.properties;
+  if (LIVE_SLUGS && LIVE_SLUGS.size > 0 && !LIVE_SLUGS.has(p.id)) return false;
   if (MV.kind === 'fav') { if (!MV.fav.has(p.id)) return false; }
   else if (MV.kind !== 'all' && p.kind !== MV.kind) return false;
   if (MV.q) {
